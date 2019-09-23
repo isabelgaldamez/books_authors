@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .container {
+                width: 970px;
+                margin: 0px auto;
+                padding: 10px 10px;
+            }
+            .success_logged_user h3 {
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info{
+                margin-top: -60px;
+                margin-left: 530px;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info h3{
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info a{
+                margin-top: 20px;
+                margin-left: 70px;
+                font-size: 20px;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .success_logged_user {
+                border-bottom: 2px solid black;
+            }
+            .new_book, .book_list{
+                width: 480px;
+                margin-top: 50px;
+                display: inline-block;
+                vertical-align: top;
+                /* border: 1px solid black;  */
+            }
+            .enter_book{
+                width: 450px;
+            }
+            .enter_book label{
+                margin-top: 15px;
+                font-size: 25px;
+                margin-left: 10px;
+                /* margin-right: 10px; */
+                display: inline-block;
+                vertical-align: top;
+            }
+            .enter_book input[type='text']{
+                /* /* height: 25px;* */
+                width: 290px;
+                font-size: 20px;
+                margin-top: 20px;
+                margin-left: 75px;
+                display: inline-block;
+                vertical-align: top;
+                border: 1px solid black;
+            }
+            .enter_book textarea{
+                font-size: 20px;
+                margin-top: 20px;
+                margin-left: 15px;
+                display: inline-block;
+                vertical-align: top;
+                border: 1px solid black;
+            }
+            .enter_book input:nth-child(3){
+                margin-left: 75px;
+            }
+            .enter_book button{
+                width: 150px;
+                height: 50px;
+                font-size: 20px;
+                margin-left: 150px;
+                border-radius: 10px;
+                margin-top: 50px;
+                border: 1px solid black;
+            }
+            .all_books{
+                margin-left: 20px;
+            }
+            .all_books p{ 
+                margin-top: 5px;
+                margin-left: 30px;
+            }
+            .add_to_favories{
+                margin-left: 30px;
+                margin-right: 310px;
+            }
+        </style>
+        <title>Favorite Books</title>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='success_logged_user'>
+                <h3>Conding Dojo Wall</h3>
+                <div class='user_info'>
+                    <h3>Welcome, {{logged_user_info.first_name}} {{logged_user_info.last_name}}!</h3>
+                    <a href='/clear_session'>Log Out</a>
+                </div>
+            </div>
+            <div class='new_book'>
+                <h2>Add a Favorite Book</h2>
+                <div class='enter_book'>
+                        {%if messages%}
+                        <ul class='messages'>
+                            {%for message in messages%}
+                            {% if message.tags.0 == "b" %}<li  style= "color: red" class="{{message.tags}}">{{ message }}</li>{% endif%}
+                            {%endfor%}
+                        </ul>
+                        {%endif%}
+                    <form action='/add_book' method='post'>
+                        {% csrf_token %}
+                        <input type='hidden' name='book_added_by' value={{logged_user_info.id}}>
+                        <label>Title</label>
+                        <input type='text' name='book_title' required>
+                        <label>Decription</label>
+                        <textarea rows='7' cols='30' name='book_description'></textarea>
+                        <button>Add</button>
+                    </form>
+                </div>
+            </div>
+            <div class='book_list'>
+                <h2>All Books</h2>
+                <div class='all_books'>
+                    {% for fav_books in all_books %}
+                        <a href='books/{{fav_books.id}}'>{{fav_books.title}}</a>
+                        <p>(added by {{fav_books.uploaded_by.first_name}} {{fav_books.uploaded_by.last_name}})</p>
+                        <p>{{fav_books.description}}</p>
+                        <!-- <p>test {{my_books.title}}</p> -->
+                        {% if fav_books not in my_books %}
+                        <a class='add_to_favories'href='/add_to_favorites/{{fav_books.id}}'>Add to favorites</a>
+                        <p></p>
+                        {%endif%}
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

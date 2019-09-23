@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .container {
+                width: 970px;
+                margin: 0px auto;
+                padding: 10px 10px;
+            }
+            .success_logged_user h3 {
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info{
+                margin-top: -60px;
+                margin-left: 530px;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info h3{
+                display: inline-block;
+                vertical-align: top;
+            }
+            .user_info a{
+                margin-top: 20px;
+                margin-left: 70px;
+                font-size: 20px;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .success_logged_user {
+                border-bottom: 2px solid black;
+            }
+            .book_info, .favorite_user_info{
+                width: 480px;
+                margin-top: 50px;
+                display: inline-block;
+                vertical-align: top;
+                /* border: 1px solid black; */
+            }
+            #deleteBtn{
+                height: 30px;
+                width: 120px;
+                margin-top: 15px;
+                color: white;
+                border-radius: 10px;
+                font-size: 15px;
+                display: inline-block;
+                vertical-align: top;
+                background-color: rgb(220, 92, 92);
+            }
+            #updateBtn{
+                height: 30px;
+                width: 120px;
+                margin-top: 15px;
+                margin-left: 40px;
+                color: white;
+                border-radius: 10px;
+                font-size: 15px;
+                display: inline-block;
+                vertical-align: top;
+                background-color: rgb(68, 179, 68);
+            }
+            .book_info h2{
+                width: 350px;
+                padding: 5px;
+                border: 2px solid black;
+            }
+        </style>
+        <title>Book Info</title>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='success_logged_user'>
+                    <h3>Conding Dojo Wall</h3>
+                    <div class='user_info'>
+                        <h3>Welcome, {{logged_user_info.first_name}} {{logged_user_info.last_name}}!</h3>
+                        <a href='/clear_session'>Log Out</a>
+                    </div>
+            </div>
+            <div class='book_info'>
+                {%if messages%}
+                    <ul class='messages'>
+                        {%for message in messages%}
+                        {% if message.tags.0 == "u" %}<li  style= "color: red" class="{{message.tags}}">{{ message }}</li>{% endif%}
+                        {%endfor%}
+                    </ul>
+                {%endif%}
+                <h2>{{book_info.title}}</h2>
+                <p>Added by: {{book_info.uploaded_by.first_name}} {{book_info.uploaded_by.last_name}}</p>
+                <p>Added on: {{book_info.created_at}}</p>
+                <p>Last updated on: {{book_info.updated_at}}</p>
+                {% if book_info.uploaded_by.id == logged_user_info.id%}
+                <form action='edit_description/{{book_info.id}}' method='post'>
+                    {% csrf_token %}
+                    <p>Description:</p>
+                    <textarea rows='7' cols='58' name = 'edit_description'>{{book_info.description}}</textarea>
+                    <button id='updateBtn' name='update_description'>Update</button>
+                    <button id='deleteBtn' name='delete_book'>Delete</button>
+                </form>
+                {%else%}
+                    <p>Description: {{book_info.description}}</p>
+                {%endif%}
+            </div>
+            <div class='favorite_user_info'>
+                <h2>Users Who Like This Book</h2>
+                <ul>
+                    {% for users in users_who_like%}
+                    <li>
+                        {{users.first_name}} {{users.last_name}}
+                    </li> 
+                    {%endfor%}  
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
