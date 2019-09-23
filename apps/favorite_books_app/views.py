@@ -68,6 +68,8 @@ def add_book(request):
             # messages.error(request, value)
         return redirect ('/books')
 
+    # Creates a relationship between user/books, 'users_who_like' is an attribute
+    # of the books table to add an instance of the user
     if request.method == 'POST': 
         added_by_user = User.objects.get(id = request.POST['book_added_by'])
         book_created = Book.objects.create(title = request.POST['book_title'], description = request.POST['book_description'], uploaded_by = added_by_user)
@@ -82,6 +84,10 @@ def display_info(request, book_id):
         book_info = Book.objects.get(id = book_id)
         # my_fav_books = User.objects.filter(liked_books = )
 
+        # Create an instance of the book, once the instance is created
+        # Through the user, we need to filter or a way to get all the 
+        # books that the user has liked. Get all the users and in the 
+        # template, we will be able to access it.
         users_who_like = User.objects.filter(liked_books = book_info)
 
         context = {
